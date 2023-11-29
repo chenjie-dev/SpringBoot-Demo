@@ -1,0 +1,45 @@
+server:
+  port: 10001
+
+spring:
+  cloud:
+    kubernetes:
+      enabled: true
+  application:
+    name: spring-boot-redis-test
+  redis:
+    # 集群模式节点连接配置
+    cluster:
+      nodes: ${REDIS_NODES:10.31.63.48:6379,10.31.63.49:6379,10.31.63.50:6379,10.31.63.51:6379,10.31.63.52:6379,10.31.63.53:6379}
+    # 单节点模式节点连接配置
+    #host: localhost
+    #port: 6379
+    password: ${REDIS_PASSWORD:HkxuxW0Xsg}
+    prefix:
+      namespace:
+        namespaceSwitch: ${NAMESPACE_ENABLE:true}
+        # 当前命名空间前缀-必配
+        localNamespace: ${LOCAL_NAMESPACE:backend-manage}
+        # 公共命名空间前缀-必配
+        publicNamespace: ${PUBLIC_NAMESPACE:public}
+    lettuce:
+      pool:
+        max-idle: 96
+        max-wait: -1
+        max-active: 96
+        min-idle: 48
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  mvc:
+    throw-exception-if-no-handler-found: true
+    static-path-pattern: /static/**
+  codec:
+    max-in-memory-size: 10MB
+  web:
+    resources:
+      add-mappings: false

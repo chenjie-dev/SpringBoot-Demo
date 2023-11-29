@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "spring.kafka.producer.namespace",
+    "type": "java.lang.String",
+    "description": "命名空间(topic前缀, public表示公共命名空间)."
+  },{
+    "name": "spring.kafka.consumer.namespace",
+    "type": "java.lang.String",
+    "description": "命名空间(topic前缀, public表示公共命名空间)."
+  },
+  {
+    "name": "spring.kafka.enabled",
+    "type": "java.lang.Boolean",
+    "description": "开启kafka自动装配."
+  },
+  {
+    "name": "spring.aa-kafka.enabled",
+    "type": "java.lang.Boolean",
+    "description": "开启双活kafka自动装配."
+  },
+  {
+    "name": "spring.kafka.producer.threads.size",
+    "type": "java.lang.Integer",
+    "description": "线程池大小，默认10."
+  }
+]
+}

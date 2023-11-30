@@ -1,8 +1,8 @@
 package com.chenjie.redis.event;
 
 
-import com.chenjie.redis.config.RedisServiceAutoConfigure;
 import com.chenjie.redis.aop.RedisFallbackAspect;
+import com.chenjie.redis.config.RedisServiceAutoConfigure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -18,24 +18,24 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
  */
 @Configuration
 @ConditionalOnClass(RedisServiceAutoConfigure.class)
-@ConditionalOnProperty(value = "spring.redis.event.enabled",havingValue = "true",matchIfMissing = true)
+@ConditionalOnProperty(value = "spring.redis.event.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisEventConfigure {
 
     @Autowired
     private Environment env;
 
     @Bean("redisEventListener")
-    public RedisCEListener redisCEListener(RedisConnectionFactory redisConnectionFactory, Environment env){
-        return new RedisCEListener((LettuceConnectionFactory) redisConnectionFactory,env);
+    public RedisCEListener redisCEListener(RedisConnectionFactory redisConnectionFactory, Environment env) {
+        return new RedisCEListener((LettuceConnectionFactory) redisConnectionFactory, env);
     }
 
     @Bean
-    public RedisCEPublisher redisCEPublisher(ApplicationEventPublisher publisher){
+    public RedisCEPublisher redisCEPublisher(ApplicationEventPublisher publisher) {
         return new RedisCEPublisher(publisher);
     }
 
     @Bean
-    public RedisFallbackAspect redisFallbackAspect(ApplicationEventPublisher publisher){
+    public RedisFallbackAspect redisFallbackAspect(ApplicationEventPublisher publisher) {
         return new RedisFallbackAspect(redisCEPublisher(publisher));
     }
 }

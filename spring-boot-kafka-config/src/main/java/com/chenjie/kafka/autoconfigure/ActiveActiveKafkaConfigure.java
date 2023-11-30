@@ -24,7 +24,7 @@ import java.io.IOException;
  */
 @Configuration
 @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true")
-@EnableConfigurationProperties({AAKafkaProperties.class,KafkaProperties.class})
+@EnableConfigurationProperties({AAKafkaProperties.class, KafkaProperties.class})
 public class ActiveActiveKafkaConfigure {
     private final AAKafkaProperties aaKafkaProperties;
     private final KafkaProperties kafkaProperties;
@@ -35,10 +35,10 @@ public class ActiveActiveKafkaConfigure {
     }
 
     @Bean("aaKafkaTemplate")
-    @ConditionalOnProperty(name = "spring.aa-kafka.enabled",havingValue = "true")
+    @ConditionalOnProperty(name = "spring.aa-kafka.enabled", havingValue = "true")
     public KafkaTemplate<?, ?> aaKafkaTemplate(ProducerFactory<Object, Object> aaKafkaProducerFactory,
-                                             ProducerListener<Object, Object> aaKafkaProducerListener,
-                                             ObjectProvider<RecordMessageConverter> messageConverter) {
+                                               ProducerListener<Object, Object> aaKafkaProducerListener,
+                                               ObjectProvider<RecordMessageConverter> messageConverter) {
         KafkaTemplate<Object, Object> kafkaTemplate = new KafkaTemplate<>(aaKafkaProducerFactory);
         messageConverter.ifUnique(kafkaTemplate::setMessageConverter);
         kafkaTemplate.setProducerListener(aaKafkaProducerListener);
@@ -47,13 +47,13 @@ public class ActiveActiveKafkaConfigure {
     }
 
     @Bean("aaKafkaProducerListener")
-    @ConditionalOnProperty(name = "spring.aa-kafka.enabled",havingValue = "true")
+    @ConditionalOnProperty(name = "spring.aa-kafka.enabled", havingValue = "true")
     public ProducerListener<Object, Object> aaKafkaProducerListener() {
         return new LoggingProducerListener<>();
     }
 
     @Bean("aaKafkaConsumerFactory")
-    @ConditionalOnProperty(name = "spring.aa-kafka.enabled",havingValue = "true")
+    @ConditionalOnProperty(name = "spring.aa-kafka.enabled", havingValue = "true")
     public ConsumerFactory<?, ?> aaKafkaConsumerFactory(
             ObjectProvider<DefaultKafkaConsumerFactoryCustomizer> customizers) {
         DefaultKafkaConsumerFactory<Object, Object> factory = new DefaultKafkaConsumerFactory<>(
@@ -63,7 +63,7 @@ public class ActiveActiveKafkaConfigure {
     }
 
     @Bean("aaKafkaProducerFactory")
-    @ConditionalOnProperty(name = "spring.aa-kafka.enabled",havingValue = "true")
+    @ConditionalOnProperty(name = "spring.aa-kafka.enabled", havingValue = "true")
     public ProducerFactory<?, ?> aaKafkaProducerFactory(
             ObjectProvider<DefaultKafkaProducerFactoryCustomizer> customizers) {
         DefaultKafkaProducerFactory<?, ?> factory = new DefaultKafkaProducerFactory<>(
@@ -78,16 +78,17 @@ public class ActiveActiveKafkaConfigure {
 
     /**
      * 使用@KafkaListener时指定containerFactory为authListenerContainerFactory
+     *
      * @return
      */
     @Bean("aaListenerContainerFactory")
-    @ConditionalOnProperty(name = "spring.aa-kafka.enabled",havingValue = "true")
+    @ConditionalOnProperty(name = "spring.aa-kafka.enabled", havingValue = "true")
     public ConcurrentKafkaListenerContainerFactory listenerContainerFactory(ConcurrentKafkaListenerContainerFactoryConfigurer configurer) {
         //指定使用DefaultKafkaConsumerFactory
         DefaultKafkaConsumerFactory<Object, Object> consumerFactory = new DefaultKafkaConsumerFactory<>(this.aaKafkaProperties.buildConsumerProperties());
         ConcurrentKafkaListenerContainerFactory factory = new ConcurrentKafkaListenerContainerFactory();
         factory.setConsumerFactory(consumerFactory);
-        configurer.configure(factory,consumerFactory);
+        configurer.configure(factory, consumerFactory);
         return factory;
     }
 
@@ -113,7 +114,7 @@ public class ActiveActiveKafkaConfigure {
     }
 
     @Bean("aaKafkaAdmin")
-    @ConditionalOnProperty(name = "spring.aa-kafka.enabled",havingValue = "true")
+    @ConditionalOnProperty(name = "spring.aa-kafka.enabled", havingValue = "true")
     public KafkaAdmin aaKafkaAdmin() {
         KafkaAdmin kafkaAdmin = new KafkaAdmin(this.aaKafkaProperties.buildAdminProperties());
         kafkaAdmin.setFatalIfBrokerNotAvailable(this.aaKafkaProperties.getAdmin().isFailFast());

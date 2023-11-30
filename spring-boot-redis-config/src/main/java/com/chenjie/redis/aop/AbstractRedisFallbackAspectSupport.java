@@ -100,7 +100,7 @@ public abstract class AbstractRedisFallbackAspectSupport {
         Method fallbackMethod = extractDefaultFallbackMethod(pjp, defaultFallback, fallbackClass);
         if (fallbackMethod != null) {
             // Construct args.
-            Object[] args = fallbackMethod.getParameterTypes().length == 0 ? new Object[0] : new Object[] {ex};
+            Object[] args = fallbackMethod.getParameterTypes().length == 0 ? new Object[0] : new Object[]{ex};
             try {
                 if (isStatic(fallbackMethod)) {
                     return fallbackMethod.invoke(null, args);
@@ -177,7 +177,7 @@ public abstract class AbstractRedisFallbackAspectSupport {
             // One is empty parameter list.
             Class<?>[] defaultParamTypes = new Class<?>[0];
             // The other is a single parameter {@link Throwable} to get relevant exception info.
-            Class<?>[] paramTypeWithException = new Class<?>[] {Throwable.class};
+            Class<?>[] paramTypeWithException = new Class<?>[]{Throwable.class};
             // We first find the default fallback with empty parameter list.
             Method method = findMethod(mustStatic, clazz, defaultFallback, originReturnType, defaultParamTypes);
             // If default fallback with empty params is absent, we then try to find the other one.
@@ -193,11 +193,11 @@ public abstract class AbstractRedisFallbackAspectSupport {
         }
         return m.getMethod();
     }
-    
+
     private boolean checkStatic(boolean mustStatic, Method method) {
         return !mustStatic || isStatic(method);
     }
-    
+
     private Method findMethod(boolean mustStatic, Class<?> clazz, String name, Class<?> returnType,
                               Class<?>... parameterTypes) {
         Method[] methods = clazz.getDeclaredMethods();
@@ -227,7 +227,7 @@ public abstract class AbstractRedisFallbackAspectSupport {
     }
 
     protected Method resolveMethod(ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Class<?> targetClass = joinPoint.getTarget().getClass();
 
         Method method = getDeclaredMethodFor(targetClass, signature.getName(),

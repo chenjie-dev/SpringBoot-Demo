@@ -33,10 +33,10 @@ public class MyKafkaListenerAnnotationBeanPostProcessor implements BeanPostProce
     private final Environment env;
     private final LogAccessor logger = new LogAccessor(LogFactory.getLog(getClass()));
     private final Set<Class<?>> nonAnnotatedClasses = Collections.newSetFromMap(new ConcurrentHashMap<>(64));
-    private String prefix;
     private final String DEFAULT_SEPARATOR = "_";
     private final String EXPRESSION_PREFIX = "$";
     private final char EXPRESSION_SEPARATOR = ':';
+    private String prefix;
     private KubernetesClient kubernetesClient;
 
     public MyKafkaListenerAnnotationBeanPostProcessor(Environment env, KubernetesClient client) {
@@ -47,7 +47,7 @@ public class MyKafkaListenerAnnotationBeanPostProcessor implements BeanPostProce
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE-1;
+        return Ordered.LOWEST_PRECEDENCE - 1;
     }
 
     @Override
@@ -67,12 +67,12 @@ public class MyKafkaListenerAnnotationBeanPostProcessor implements BeanPostProce
             if (annotatedMethods.isEmpty()) {
                 this.nonAnnotatedClasses.add(bean.getClass());
                 this.logger.trace(() -> "No @KafkaListener annotations found on bean type: " + bean.getClass());
-            }else {
+            } else {
                 String prefix = getDefaultNamespace();
                 for (Map.Entry<Method, Set<KafkaListener>> entry : annotatedMethods.entrySet()) {
                     Method method = entry.getKey();
                     for (KafkaListener listener : entry.getValue()) {
-                        addPrefix(prefix,method);
+                        addPrefix(prefix, method);
                     }
                 }
             }
@@ -97,30 +97,30 @@ public class MyKafkaListenerAnnotationBeanPostProcessor implements BeanPostProce
     }
 
     @SuppressWarnings("unchecked")
-    private void addPrefix(String prefix, Method method){
+    private void addPrefix(String prefix, Method method) {
         try {
             KafkaListener kafkaListener = method.getAnnotation(KafkaListener.class);
             InvocationHandler invocationHandler = Proxy.getInvocationHandler(kafkaListener);
             Field value = invocationHandler.getClass().getDeclaredField("memberValues");
             value.setAccessible(true);
             Map<String, Object> memberValues = (Map<String, Object>) value.get(invocationHandler);
-            String[] topics = (String[])memberValues.get("topics");
+            String[] topics = (String[]) memberValues.get("topics");
             String[] prefixed = Arrays.stream(topics).map(new Function<String, String>() {
                 @Override
                 public String apply(String s) {
-                    if (s.startsWith(EXPRESSION_PREFIX)){
+                    if (s.startsWith(EXPRESSION_PREFIX)) {
                         String realTopic = resolveTopicFromExpression(s);
-                        if (Objects.nonNull(realTopic)){
+                        if (Objects.nonNull(realTopic)) {
                             return "".equals(prefix) ? realTopic : prefix + DEFAULT_SEPARATOR + realTopic;
-                        }else {
-                            throw new IllegalArgumentException("cannot resolve placeholder: "+s);
+                        } else {
+                            throw new IllegalArgumentException("cannot resolve placeholder: " + s);
                         }
-                    }else {
+                    } else {
                         return "".equals(prefix) ? s : prefix + DEFAULT_SEPARATOR + s;
                     }
                 }
             }).toArray(val -> new String[topics.length]);
-            logger.info("prefixed consumer topics: "+Arrays.asList(prefixed));
+            logger.info("prefixed consumer topics: " + Arrays.asList(prefixed));
             memberValues.put("topics", prefixed);
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,16 +129,17 @@ public class MyKafkaListenerAnnotationBeanPostProcessor implements BeanPostProce
 
     /**
      * 获取默认kafka命名空间名
+     *
      * @return
      */
     private String getDefaultNamespace() {
         String consumerTopicPrefix = this.env.getProperty(SPRING_KAFKA_CONSUMER_NAMESPACE_KEY);
-        if (Objects.nonNull(consumerTopicPrefix)){
+        if (Objects.nonNull(consumerTopicPrefix)) {
             return consumerTopicPrefix;
         }
         String k8sEnabled = this.env.getProperty("spring.cloud.kubernetes.enabled");
         if ((Boolean.TRUE + "").equalsIgnoreCase(k8sEnabled)) {
-            return kubernetesClient.getNamespace()==null?DEFAULT_SPRING_KAFKA_NAMESPACE:kubernetesClient.getNamespace();
+            return kubernetesClient.getNamespace() == null ? DEFAULT_SPRING_KAFKA_NAMESPACE : kubernetesClient.getNamespace();
         } else {
             return DEFAULT_SPRING_KAFKA_NAMESPACE;
         }
@@ -146,19 +147,20 @@ public class MyKafkaListenerAnnotationBeanPostProcessor implements BeanPostProce
 
     /**
      * 获取真正的topic名字
+     *
      * @param expression
      * @return
      */
-    private String resolveTopicFromExpression(String expression){
+    private String resolveTopicFromExpression(String expression) {
         String ph = expression.substring(2, expression.length() - 1);
         int index = ph.indexOf(EXPRESSION_SEPARATOR);
         String resolved;
-        if (index == -1){
-            resolved =  env.containsProperty(ph)?env.getProperty(ph):System.getProperty(ph);
-        }else {
+        if (index == -1) {
+            resolved = env.containsProperty(ph) ? env.getProperty(ph) : System.getProperty(ph);
+        } else {
             String propertyName = ph.substring(0, index);
             String value = env.containsProperty(propertyName) ? env.getProperty(propertyName) : System.getProperty(propertyName);
-            resolved =  value == null ? expression.substring(index+1, ph.length()) : value;
+            resolved = value == null ? expression.substring(index + 1, ph.length()) : value;
         }
         return resolved;
     }

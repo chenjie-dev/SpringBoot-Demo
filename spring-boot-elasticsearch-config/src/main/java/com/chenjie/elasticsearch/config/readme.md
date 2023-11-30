@@ -2,6 +2,7 @@ springboot启动类中加上System.setProperty("jasypt.encryptor.password", "${J
 本地测试的话将"${JASYPT_PASSWORD}"改为"gangtise"（若修改了密钥则用修改后的）
 
 application.yaml中加入如下配置：
+
 ```yaml
 spring:
   elasticSearch:

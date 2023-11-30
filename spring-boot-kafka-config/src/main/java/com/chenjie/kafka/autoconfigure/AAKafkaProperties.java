@@ -26,39 +26,28 @@ import java.util.*;
 @ConfigurationProperties(prefix = "spring.aa-kafka")
 public class AAKafkaProperties {
     /**
-     * Comma-delimited list of host:port pairs to use for establishing the initial
-     * connections to the Kafka cluster. Applies to all components unless overridden.
-     */
-    private List<String> bootstrapServers = new ArrayList<>(Collections.singletonList("localhost:9092"));
-
-    /**
-     * ID to pass to the server when making requests. Used for server-side logging.
-     */
-    private String clientId;
-
-    /**
      * Additional properties, common to producers and consumers, used to configure the
      * client.
      */
     private final Map<String, String> properties = new HashMap<>();
-
     private final Consumer consumer = new Consumer();
-
     private final Producer producer = new Producer();
-
     private final Admin admin = new Admin();
-
     private final Streams streams = new Streams();
-
     private final Listener listener = new Listener();
-
     private final Ssl ssl = new Ssl();
-
     private final Jaas jaas = new Jaas();
-
     private final Template template = new Template();
-
     private final Security security = new Security();
+    /**
+     * Comma-delimited list of host:port pairs to use for establishing the initial
+     * connections to the Kafka cluster. Applies to all components unless overridden.
+     */
+    private List<String> bootstrapServers = new ArrayList<>(Collections.singletonList("localhost:9092"));
+    /**
+     * ID to pass to the server when making requests. Used for server-side logging.
+     */
+    private String clientId;
 
     public List<String> getBootstrapServers() {
         return this.bootstrapServers;
@@ -137,6 +126,7 @@ public class AAKafkaProperties {
      * <p>
      * This allows you to add additional properties, if necessary, and override the
      * default kafkaConsumerFactory bean.
+     *
      * @return the consumer properties initialized with the customizations defined on this
      * instance
      */
@@ -151,6 +141,7 @@ public class AAKafkaProperties {
      * <p>
      * This allows you to add additional properties, if necessary, and override the
      * default kafkaProducerFactory bean.
+     *
      * @return the producer properties initialized with the customizations defined on this
      * instance
      */
@@ -165,6 +156,7 @@ public class AAKafkaProperties {
      * <p>
      * This allows you to add additional properties, if necessary, and override the
      * default kafkaAdmin bean.
+     *
      * @return the admin properties initialized with the customizations defined on this
      * instance
      */
@@ -178,6 +170,7 @@ public class AAKafkaProperties {
      * Create an initial map of streams properties from the state of this instance.
      * <p>
      * This allows you to add additional properties, if necessary.
+     *
      * @return the streams properties initialized with the customizations defined on this
      * instance
      */
@@ -187,87 +180,98 @@ public class AAKafkaProperties {
         return properties;
     }
 
+    public enum IsolationLevel {
+
+        /**
+         * Read everything including aborted transactions.
+         */
+        READ_UNCOMMITTED((byte) 0),
+
+        /**
+         * Read records from committed transactions, in addition to records not part of
+         * transactions.
+         */
+        READ_COMMITTED((byte) 1);
+
+        private final byte id;
+
+        IsolationLevel(byte id) {
+            this.id = id;
+        }
+
+        public byte id() {
+            return this.id;
+        }
+
+    }
+
     public static class Consumer {
 
         private final Ssl ssl = new Ssl();
 
         private final Security security = new Security();
-
+        /**
+         * Additional consumer-specific properties used to configure the client.
+         */
+        private final Map<String, String> properties = new HashMap<>();
         /**
          * Frequency with which the consumer offsets are auto-committed to Kafka if
          * 'enable.auto.commit' is set to true.
          */
         private Duration autoCommitInterval;
-
         /**
          * What to do when there is no initial offset in Kafka or if the current offset no
          * longer exists on the server.
          */
         private String autoOffsetReset;
-
         /**
          * Comma-delimited list of host:port pairs to use for establishing the initial
          * connections to the Kafka cluster. Overrides the global property, for consumers.
          */
         private List<String> bootstrapServers;
-
         /**
          * ID to pass to the server when making requests. Used for server-side logging.
          */
         private String clientId;
-
         /**
          * Whether the consumer's offset is periodically committed in the background.
          */
         private Boolean enableAutoCommit;
-
         /**
          * Maximum amount of time the server blocks before answering the fetch request if
          * there isn't sufficient data to immediately satisfy the requirement given by
          * "fetch-min-size".
          */
         private Duration fetchMaxWait;
-
         /**
          * Minimum amount of data the server should return for a fetch request.
          */
         private DataSize fetchMinSize;
-
         /**
          * Unique string that identifies the consumer group to which this consumer
          * belongs.
          */
         private String groupId;
-
         /**
          * Expected time between heartbeats to the consumer coordinator.
          */
         private Duration heartbeatInterval;
-
         /**
          * Isolation level for reading messages that have been written transactionally.
          */
         private IsolationLevel isolationLevel = IsolationLevel.READ_UNCOMMITTED;
-
         /**
          * Deserializer class for keys.
          */
         private Class<?> keyDeserializer = StringDeserializer.class;
-
         /**
          * Deserializer class for values.
          */
         private Class<?> valueDeserializer = StringDeserializer.class;
-
         /**
          * Maximum number of records returned in a single call to poll().
          */
         private Integer maxPollRecords;
-
-        /**
-         * Additional consumer-specific properties used to configure the client.
-         */
-        private final Map<String, String> properties = new HashMap<>();
 
         public Ssl getSsl() {
             return this.ssl;
@@ -416,65 +420,54 @@ public class AAKafkaProperties {
         private final Ssl ssl = new Ssl();
 
         private final Security security = new Security();
-
+        /**
+         * Additional producer-specific properties used to configure the client.
+         */
+        private final Map<String, String> properties = new HashMap<>();
         /**
          * Number of acknowledgments the producer requires the leader to have received
          * before considering a request complete.
          */
         private String acks;
-
         /**
          * Default batch size. A small batch size will make batching less common and may
          * reduce throughput (a batch size of zero disables batching entirely).
          */
         private DataSize batchSize;
-
         /**
          * Comma-delimited list of host:port pairs to use for establishing the initial
          * connections to the Kafka cluster. Overrides the global property, for producers.
          */
         private List<String> bootstrapServers;
-
         /**
          * Total memory size the producer can use to buffer records waiting to be sent to
          * the server.
          */
         private DataSize bufferMemory;
-
         /**
          * ID to pass to the server when making requests. Used for server-side logging.
          */
         private String clientId;
-
         /**
          * Compression type for all data generated by the producer.
          */
         private String compressionType;
-
         /**
          * Serializer class for keys.
          */
         private Class<?> keySerializer = StringSerializer.class;
-
         /**
          * Serializer class for values.
          */
         private Class<?> valueSerializer = StringSerializer.class;
-
         /**
          * When greater than zero, enables retrying of failed sends.
          */
         private Integer retries;
-
         /**
          * When non empty, enables transaction support for producer.
          */
         private String transactionIdPrefix;
-
-        /**
-         * Additional producer-specific properties used to configure the client.
-         */
-        private final Map<String, String> properties = new HashMap<>();
 
         public Ssl getSsl() {
             return this.ssl;
@@ -591,17 +584,14 @@ public class AAKafkaProperties {
         private final Ssl ssl = new Ssl();
 
         private final Security security = new Security();
-
-        /**
-         * ID to pass to the server when making requests. Used for server-side logging.
-         */
-        private String clientId;
-
         /**
          * Additional admin-specific properties used to configure the client.
          */
         private final Map<String, String> properties = new HashMap<>();
-
+        /**
+         * ID to pass to the server when making requests. Used for server-side logging.
+         */
+        private String clientId;
         /**
          * Whether to fail fast if the broker is not available on startup.
          */
@@ -652,48 +642,40 @@ public class AAKafkaProperties {
         private final Ssl ssl = new Ssl();
 
         private final Security security = new Security();
-
+        /**
+         * Additional Kafka properties used to configure the streams.
+         */
+        private final Map<String, String> properties = new HashMap<>();
         /**
          * Kafka streams application.id property; default spring.application.name.
          */
         private String applicationId;
-
         /**
          * Whether or not to auto-start the streams factory bean.
          */
         private boolean autoStartup = true;
-
         /**
          * Comma-delimited list of host:port pairs to use for establishing the initial
          * connections to the Kafka cluster. Overrides the global property, for streams.
          */
         private List<String> bootstrapServers;
-
         /**
          * Maximum memory size to be used for buffering across all threads.
          */
         private DataSize cacheMaxSizeBuffering;
-
         /**
          * ID to pass to the server when making requests. Used for server-side logging.
          */
         private String clientId;
-
         /**
          * The replication factor for change log topics and repartition topics created by
          * the stream processing application.
          */
         private Integer replicationFactor;
-
         /**
          * Directory location for the state store.
          */
         private String stateDir;
-
-        /**
-         * Additional Kafka properties used to configure the streams.
-         */
-        private final Map<String, String> properties = new HashMap<>();
 
         public Ssl getSsl() {
             return this.ssl;
@@ -797,79 +779,54 @@ public class AAKafkaProperties {
 
     public static class Listener {
 
-        public enum Type {
-
-            /**
-             * Invokes the endpoint with one ConsumerRecord at a time.
-             */
-            SINGLE,
-
-            /**
-             * Invokes the endpoint with a batch of ConsumerRecords.
-             */
-            BATCH
-
-        }
-
         /**
          * Listener type.
          */
         private Type type = Type.SINGLE;
-
         /**
          * Listener AckMode. See the spring-kafka documentation.
          */
         private ContainerProperties.AckMode ackMode;
-
         /**
          * Prefix for the listener's consumer client.id property.
          */
         private String clientId;
-
         /**
          * Number of threads to run in the listener containers.
          */
         private Integer concurrency;
-
         /**
          * Timeout to use when polling the consumer.
          */
         private Duration pollTimeout;
-
         /**
          * Multiplier applied to "pollTimeout" to determine if a consumer is
          * non-responsive.
          */
         private Float noPollThreshold;
-
         /**
          * Number of records between offset commits when ackMode is "COUNT" or
          * "COUNT_TIME".
          */
         private Integer ackCount;
-
         /**
          * Time between offset commits when ackMode is "TIME" or "COUNT_TIME".
          */
         private Duration ackTime;
-
         /**
          * Time between publishing idle consumer events (no data received).
          */
         private Duration idleEventInterval;
-
         /**
          * Time between checks for non-responsive consumers. If a duration suffix is not
          * specified, seconds will be used.
          */
         @DurationUnit(ChronoUnit.SECONDS)
         private Duration monitorInterval;
-
         /**
          * Whether to log the container configuration during initialization (INFO level).
          */
         private Boolean logContainerConfig;
-
         /**
          * Whether the container should fail to start if at least one of the configured
          * topics are not present on the broker.
@@ -970,6 +927,20 @@ public class AAKafkaProperties {
 
         public void setMissingTopicsFatal(boolean missingTopicsFatal) {
             this.missingTopicsFatal = missingTopicsFatal;
+        }
+
+        public enum Type {
+
+            /**
+             * Invokes the endpoint with one ConsumerRecord at a time.
+             */
+            SINGLE,
+
+            /**
+             * Invokes the endpoint with a batch of ConsumerRecords.
+             */
+            BATCH
+
         }
 
     }
@@ -1099,8 +1070,7 @@ public class AAKafkaProperties {
         private String resourceToPath(Resource resource) {
             try {
                 return resource.getFile().getAbsolutePath();
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 throw new IllegalStateException("Resource '" + resource + "' must be on a file system", ex);
             }
         }
@@ -1110,24 +1080,21 @@ public class AAKafkaProperties {
     public static class Jaas {
 
         /**
+         * Additional JAAS options.
+         */
+        private final Map<String, String> options = new HashMap<>();
+        /**
          * Whether to enable JAAS configuration.
          */
         private boolean enabled;
-
         /**
          * Login module.
          */
         private String loginModule = "com.sun.security.auth.module.Krb5LoginModule";
-
         /**
          * Control flag for login configuration.
          */
         private KafkaJaasLoginModuleInitializer.ControlFlag controlFlag = KafkaJaasLoginModuleInitializer.ControlFlag.REQUIRED;
-
-        /**
-         * Additional JAAS options.
-         */
-        private final Map<String, String> options = new HashMap<>();
 
         public boolean isEnabled() {
             return this.enabled;
@@ -1185,31 +1152,6 @@ public class AAKafkaProperties {
             PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
             map.from(this::getProtocol).to(properties.in(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG));
             return properties;
-        }
-
-    }
-
-    public enum IsolationLevel {
-
-        /**
-         * Read everything including aborted transactions.
-         */
-        READ_UNCOMMITTED((byte) 0),
-
-        /**
-         * Read records from committed transactions, in addition to records not part of
-         * transactions.
-         */
-        READ_COMMITTED((byte) 1);
-
-        private final byte id;
-
-        IsolationLevel(byte id) {
-            this.id = id;
-        }
-
-        public byte id() {
-            return this.id;
         }
 
     }

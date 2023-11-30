@@ -15,20 +15,20 @@ public class PrefixConfig {
         return localNamespace;
     }
 
-    public String getPublicNamespace() {
-        return publicNamespace;
-    }
-
-    public Boolean getNamespaceSwitch() {
-        return namespaceSwitch;
-    }
-
     public void setLocalNamespace(String localNamespace) {
         this.localNamespace = localNamespace;
     }
 
+    public String getPublicNamespace() {
+        return publicNamespace;
+    }
+
     public void setPublicNamespace(String publicNamespace) {
         this.publicNamespace = publicNamespace;
+    }
+
+    public Boolean getNamespaceSwitch() {
+        return namespaceSwitch;
     }
 
     public void setNamespaceSwitch(Boolean namespaceSwitch) {

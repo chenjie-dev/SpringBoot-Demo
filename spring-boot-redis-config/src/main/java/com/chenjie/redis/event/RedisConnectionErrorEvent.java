@@ -10,6 +10,7 @@ public class RedisConnectionErrorEvent extends ApplicationEvent {
     private String msg;
 
     private Throwable e;
+
     /**
      * Create a new {@code ApplicationEvent}.
      *

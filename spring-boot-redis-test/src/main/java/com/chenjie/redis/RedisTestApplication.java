@@ -9,7 +9,7 @@ import java.util.TimeZone;
 
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.chenjie"})
+@ComponentScan(basePackages = {"com.chenjie.*"})
 @EnableWebMvc
 public class RedisTestApplication {
     public static void main(String[] args) {

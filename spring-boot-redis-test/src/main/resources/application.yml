@@ -40,6 +40,3 @@ spring:
     static-path-pattern: /static/**
   codec:
     max-in-memory-size: 10MB
-  web:
-    resources:
-      add-mappings: false

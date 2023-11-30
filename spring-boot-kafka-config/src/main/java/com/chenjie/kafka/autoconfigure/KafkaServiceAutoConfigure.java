@@ -25,14 +25,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 @ConditionalOnProperty(name = "spring.kafka.enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass({KafkaTemplate.class, KubernetesAutoConfiguration.class, ActiveActiveKafkaConfigure.class})
 @EnableConfigurationProperties(KafkaProperties.class)
-@Order(Integer.MAX_VALUE-10)
+@Order(Integer.MAX_VALUE - 10)
 public class KafkaServiceAutoConfigure {
     @Autowired(required = false)
     @Qualifier("aaKafkaTemplate")
-    private KafkaTemplate<?,?> aaKafkaTemplate;
+    private KafkaTemplate<?, ?> aaKafkaTemplate;
     @Autowired
     @Qualifier("kafkaTemplate")
-    private KafkaTemplate<?,?> kafkaTemplate;
+    private KafkaTemplate<?, ?> kafkaTemplate;
     @Autowired
     private Environment env;
     @Autowired
@@ -43,34 +43,37 @@ public class KafkaServiceAutoConfigure {
 
     /**
      * kafka功能实现封装类
+     *
      * @return
      */
     @Bean
     @ConditionalOnMissingBean
     @DependsOn("kafkaTemplate")
 //    @ConditionalOnBean(name = "kafkaTemplate")
-    public KafkaService<?,?> kafkaService(){
-        return new KafkaService(kafkaTemplate,aaKafkaTemplate,env,kubernetesClient);
+    public KafkaService<?, ?> kafkaService() {
+        return new KafkaService(kafkaTemplate, aaKafkaTemplate, env, kubernetesClient);
     }
 
     /**
      * kafka消费者bean后置处理器
+     *
      * @return
      */
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnBean(KafkaService.class)
-    public MyKafkaListenerAnnotationBeanPostProcessor myAnnotationProcessor(){
-        return new MyKafkaListenerAnnotationBeanPostProcessor(env,kubernetesClient);
+    public MyKafkaListenerAnnotationBeanPostProcessor myAnnotationProcessor() {
+        return new MyKafkaListenerAnnotationBeanPostProcessor(env, kubernetesClient);
     }
 
     /**
      * kafka消息发送实例
+     *
      * @return
      */
     @Bean
     @ConditionalOnMissingBean
-    public SendEmailAspect sendEmailAspect(){
+    public SendEmailAspect sendEmailAspect() {
         return new SendEmailAspect(kafkaService());
     }
 }

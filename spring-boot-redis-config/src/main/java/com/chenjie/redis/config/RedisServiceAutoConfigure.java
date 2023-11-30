@@ -1,9 +1,9 @@
 package com.chenjie.redis.config;
 
-import com.chenjie.redis.serializer.RedisKeySerializer;
-import com.chenjie.redis.constant.RedisStarterConstant;
-import com.chenjie.redis.serializer.RedisValueJacksonSerializer;
 import com.chenjie.redis.StarterRedisTemplate;
+import com.chenjie.redis.constant.RedisStarterConstant;
+import com.chenjie.redis.serializer.RedisKeySerializer;
+import com.chenjie.redis.serializer.RedisValueJacksonSerializer;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;

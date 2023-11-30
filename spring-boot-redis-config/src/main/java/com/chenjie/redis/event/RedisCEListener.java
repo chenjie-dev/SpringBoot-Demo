@@ -40,9 +40,9 @@ import static com.chenjie.redis.constant.RedisStarterConstant.DETECT_PERIOD;
  */
 @Slf4j
 public class RedisCEListener {
+    public static final AtomicBoolean isHealthy = new AtomicBoolean(true);
     private final LettuceConnectionFactory factory;
     private final Environment env;
-    public static final AtomicBoolean isHealthy = new AtomicBoolean(true);
     private final byte[] TEST_KEY = "REDIS_CONNECTION_TEST_KEY".getBytes(StandardCharsets.UTF_8);
     private final byte[] TEST_VALUE = "REDIS_CONNECTION_TEST_VALUE".getBytes(StandardCharsets.UTF_8);
 

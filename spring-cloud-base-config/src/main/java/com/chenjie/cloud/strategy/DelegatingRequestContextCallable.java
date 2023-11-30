@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 
 /**
  * 全局设置 RequestContext
+ *
  * @param <T>
  */
 public class DelegatingRequestContextCallable<T> implements Callable<T> {

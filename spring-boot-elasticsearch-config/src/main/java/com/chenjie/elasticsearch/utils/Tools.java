@@ -20,6 +20,9 @@ import java.util.Map;
 @Slf4j
 public class Tools {
 
+    final static boolean isChildDate = true;
+    final static List<String> DATE_LiST = Arrays.asList("inserttime", "enddate", "tradingday", "highestadjustedpricedate", "updatetime", "xgrq");
+
     /**
      * 获取流中的内容
      */
@@ -90,9 +93,6 @@ public class Tools {
         JSONObject mappingJson = JSONObject.parseObject(mapping);
         return mappingJson.getJSONObject("properties");
     }
-
-    final static boolean isChildDate = true;
-    final static List<String> DATE_LiST = Arrays.asList("inserttime", "enddate", "tradingday", "highestadjustedpricedate", "updatetime", "xgrq");
 
 
 }

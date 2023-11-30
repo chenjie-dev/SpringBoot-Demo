@@ -17,6 +17,7 @@ public class RedisKeySerializer implements RedisSerializer<String> {
     private final String redisPrefixNamespace;
     private final String redisPublicPrefix;
     private final Pattern publicPrefixPattern;
+    private final ObjectMapper mapper = new ObjectMapper();
     private boolean namespaceSwitch;
 
     public RedisKeySerializer(String redisPrefixNamespace, String redisPublicPrefix, Boolean namespaceSwitch) {
@@ -72,9 +73,6 @@ public class RedisKeySerializer implements RedisSerializer<String> {
         String key = new String(bytes, StandardCharsets.UTF_8);
         return publicPrefixPattern.matcher(key).matches() ? key : key.replaceFirst(redisPrefixNamespace + ":", "");
     }
-
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     public byte[] objectSerialize(@Nullable Object source) throws SerializationException {
         if (source == null) {

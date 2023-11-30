@@ -10,24 +10,6 @@ import java.util.List;
  */
 public class StarterRedisTemplate<K, V> extends RedisTemplate<K, V> {
 
-    public String removePrefix(String key) {
-        if (key == null) {
-            return key;
-        }
-
-        String[] strs = key.split(":");
-        if (strs.length == 1) {
-            return key;
-        }
-
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 1; i < strs.length; i++) {
-            stringBuilder.append(strs[i]);
-        }
-
-        return stringBuilder.toString();
-    }
-
     /**
      * 为key添加公共命名空间前缀，如public:yourkey
      */
@@ -44,6 +26,24 @@ public class StarterRedisTemplate<K, V> extends RedisTemplate<K, V> {
             stringBuilder.append(e + ":");
         });
         stringBuilder.append(originalKey + ":");
+        return stringBuilder.toString();
+    }
+
+    public String removePrefix(String key) {
+        if (key == null) {
+            return key;
+        }
+
+        String[] strs = key.split(":");
+        if (strs.length == 1) {
+            return key;
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 1; i < strs.length; i++) {
+            stringBuilder.append(strs[i]);
+        }
+
         return stringBuilder.toString();
     }
 

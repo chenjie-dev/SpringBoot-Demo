@@ -9,7 +9,7 @@ import java.util.Map;
 
 
 public class Query<T> extends LinkedHashMap<String, Object> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     /**
      * mybatis-plus分页参数
      */
@@ -23,15 +23,15 @@ public class Query<T> extends LinkedHashMap<String, Object> {
      */
     private int limit = 10;
 
-    public Query(Map<String, Object> params){
+    public Query(Map<String, Object> params) {
         this.putAll(params);
 
         //分页参数
-        if(params.get("page") != null){
-            currPage = Integer.parseInt((String)params.get("page"));
+        if (params.get("page") != null) {
+            currPage = Integer.parseInt((String) params.get("page"));
         }
-        if(params.get("limit") != null){
-            limit = Integer.parseInt((String)params.get("limit"));
+        if (params.get("limit") != null) {
+            limit = Integer.parseInt((String) params.get("limit"));
         }
 
         this.put("offset", (currPage - 1) * limit);
@@ -39,8 +39,8 @@ public class Query<T> extends LinkedHashMap<String, Object> {
         this.put("limit", limit);
 
         //防止SQL注入（因为sidx、order是通过拼接SQL实现排序的，会有SQL注入风险）
-        String sidx = SQLFilter.sqlInject((String)params.get("sidx"));
-        String order = SQLFilter.sqlInject((String)params.get("order"));
+        String sidx = SQLFilter.sqlInject((String) params.get("sidx"));
+        String order = SQLFilter.sqlInject((String) params.get("order"));
         this.put("sidx", sidx);
         this.put("order", order);
 
@@ -48,7 +48,7 @@ public class Query<T> extends LinkedHashMap<String, Object> {
         this.page = new Page<>(currPage, limit);
 
         //排序
-        if(StringUtils.isNotBlank(sidx) && StringUtils.isNotBlank(order)){
+        if (StringUtils.isNotBlank(sidx) && StringUtils.isNotBlank(order)) {
             this.page.setOrderByField(sidx);
             this.page.setAsc("ASC".equalsIgnoreCase(order));
         }

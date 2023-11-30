@@ -1,0 +1,52 @@
+server:
+  port: 10002
+spring:
+  cloud:
+    kubernetes:
+      enabled: true
+  application:
+    name: spring-boot-kafka-test
+  aa-kafka:
+    enabled: true
+  kafka:
+    enabled: true
+    bootstrap-servers: ${KAFKA_SERVERS:10.31.63.80:9094,10.31.63.81:9094,10.31.63.82:9094}
+    listener:
+      #      配置ack模式为用户自己负责，为手动提交做好准备
+      ack-mode: manual
+      #      设置n个监听者实例 持续获取kafka消息。不要多于topic的分区数，以免造成资源浪费
+      #      concurrency: 10
+      #      设置成批量处理
+#      type: batch
+    producer:
+      namespace: ${LOCAL_NAMESPACE:backend-manage}
+      batch-size: 65536
+      buffer-memory: 33554432
+      properties:
+        sasl.mechanism: ${KAFKA_SASL_MECHANISM:PLAIN}
+        security.protocol: ${KAFKA_SECURITY_PROTOCOL:SASL_PLAINTEXT}
+        sasl.jaas.config: ${KAFKA_SASL_CONFIG:org.apache.kafka.common.security.plain.PlainLoginModule required username=user password=O4uZJ8Vaow5v;}
+        ssl.truststore.location: ${KAFKA_SSL_TRUSTSTORE_LOCATION_CONFIG:D:\workspace\service\source\src\main\resources\kafka.truststore.jks}
+        ssl.truststore.password: ${KAFKA_SSL_TRUSTSTORE_PASSWORD_CONFIG:123456}
+        ssl.endpoint.identification.algorithm:
+
+    consumer:
+      namespace: ${LOCAL_NAMESPACE:backend-manage}
+      group-id: ${GROUP-ID:huawei-test-not-auth-email-0}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      #关闭自动提交
+      enable-auto-commit: false
+      #每次拉取一条消息
+      max-poll-records: 5
+      properties:
+        sasl.mechanism: ${KAFKA_SASL_MECHANISM:PLAIN}
+        security.protocol: ${KAFKA_SECURITY_PROTOCOL:SASL_PLAINTEXT}
+        sasl.jaas.config: ${KAFKA_SASL_CONFIG:org.apache.kafka.common.security.plain.PlainLoginModule required username=user password=O4uZJ8Vaow5v;}
+        ssl.truststore.location: ${KAFKA_SSL_TRUSTSTORE_LOCATION_CONFIG:D:\workspace\service\source\src\main\resources\kafka.truststore.jks}
+        ssl.truststore.password: ${KAFKA_SSL_TRUSTSTORE_PASSWORD_CONFIG:123456}
+        session.timeout.ms: 60000
+        heartbeat.interval.ms: 20000
+        max.poll.interval.ms: 60000
+        ssl.endpoint.identification.algorithm:

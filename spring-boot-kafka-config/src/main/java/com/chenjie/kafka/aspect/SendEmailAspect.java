@@ -35,27 +35,27 @@ public class SendEmailAspect {
     @AfterReturning(returning = "rvt", pointcut = "pointCutReturn()")
     public void sendEmailSendHandler(JoinPoint joinPoint, Object rvt) {
 
-        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 
         if (null == signature) {
             logger.error(">>>>>getSignature() is null in joinPoint>>>>>");
-            return ;
+            return;
         }
 
         Method method = signature.getMethod();
         if (method == null) {
             logger.error(">>>>>getMethod() is null in method>>>>>");
-            return ;
+            return;
         }
 
         if (!method.isAnnotationPresent(SendMessage.class)) {
             logger.error(">>>>>SendMessage annotation does not exist in method>>>>>");
-            return ;
+            return;
         }
 
         if (StringUtils.isEmpty(rvt)) {
             logger.error(">>>>>return value is empty in method>>>>>");
-            return ;
+            return;
         }
 
         SendMessage sendMessage = method.getAnnotation(SendMessage.class);
@@ -63,10 +63,10 @@ public class SendEmailAspect {
 
         try {
             kafkaService.send(topic, JSONObject.toJSONString(rvt));
-            logger.info("send message success topic:[{}], data : [{}]",topic,rvt.toString());
-        }catch (Exception e) {
+            logger.info("send message success topic:[{}], data : [{}]", topic, rvt.toString());
+        } catch (Exception e) {
             e.printStackTrace();
-            logger.error("send message error topic:[{}], data : [{}] , error : [{}]",topic,rvt.toString(),e);
+            logger.error("send message error topic:[{}], data : [{}] , error : [{}]", topic, rvt.toString(), e);
         }
 
     }

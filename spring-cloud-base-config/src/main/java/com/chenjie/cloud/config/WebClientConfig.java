@@ -3,10 +3,6 @@ package com.chenjie.cloud.config;
 import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.metrics.AutoTimer;
-import org.springframework.boot.actuate.metrics.web.reactive.client.DefaultWebClientExchangeTagsProvider;
-import org.springframework.boot.actuate.metrics.web.reactive.client.MetricsWebClientFilterFunction;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -34,22 +30,22 @@ public class WebClientConfig {
     public int connectTimeout;
 
     @Bean
-    public ReactorResourceFactory reactorResourceFactory(){
+    public ReactorResourceFactory reactorResourceFactory() {
         ReactorResourceFactory factory = new ReactorResourceFactory();
         //  默认情况下，WebClient使用global Reactor Netty资源
         //  禁止使用全局资源
         factory.setUseGlobalResources(false);
-        if(connection <= 0){
+        if (connection <= 0) {
             factory.setConnectionProvider(ConnectionProvider.builder("httpClient").build());
-            log.info("webclient elastic config worker : {} , connection : {}",worker,connection);
-        }else {
-            factory.setConnectionProvider(ConnectionProvider.create("httpClient",connection));
-            log.info("webclient fixed config worker : {} , connection : {}",worker,connection);
+            log.info("webclient elastic config worker : {} , connection : {}", worker, connection);
+        } else {
+            factory.setConnectionProvider(ConnectionProvider.create("httpClient", connection));
+            log.info("webclient fixed config worker : {} , connection : {}", worker, connection);
         }
         // 设置连接数
 
         // 设置 worker 数量
-        factory.setLoopResources(LoopResources.create("httpClient",worker,true));
+        factory.setLoopResources(LoopResources.create("httpClient", worker, true));
 
         return factory;
     }
@@ -59,9 +55,9 @@ public class WebClientConfig {
     public WebClient webClient(ReactorResourceFactory reactorResourceFactory) {
 
         Function<HttpClient, HttpClient> mapper = httpClient ->
-                httpClient.tcpConfiguration(c -> c.option(ChannelOption.CONNECT_TIMEOUT_MILLIS,connectTimeout));
+                httpClient.tcpConfiguration(c -> c.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeout));
 
-        ClientHttpConnector connector = new ReactorClientHttpConnector(reactorResourceFactory,mapper);
+        ClientHttpConnector connector = new ReactorClientHttpConnector(reactorResourceFactory, mapper);
 
         return WebClient.builder().clientConnector(connector).build();
     }

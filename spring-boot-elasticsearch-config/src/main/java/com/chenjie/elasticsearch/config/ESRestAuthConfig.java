@@ -33,25 +33,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ESRestAuthConfig {
 
-    @Value("${spring.elasticSearch.host}")
-    private String[] esHost;
-    @Value("${spring.elasticSearch.port}")
-    private int esPort;
-    @Value("${spring.elasticSearch.scheme:http}")
-    private String scheme;
-    @Value("${spring.elasticSearch.user.name:null}")
-    private String esUserName;
-    @Value("${spring.elasticSearch.user.password:null}")
-    private String esUserPassword;
-    @Value("${spring.elasticSearch.auth-enable:false}")
-    private Boolean authEnable;
-
-    /**
-     * ES空闲连接保持时间，单位s，默认3s
-     */
-    @Value("${spring.elasticSearch.keepAliveTime:3}")
-    private int keepAliveTime;
-
     static TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
@@ -66,6 +47,34 @@ public class ESRestAuthConfig {
             return null;
         }
     }};
+    @Value("${spring.elasticSearch.host}")
+    private String[] esHost;
+    @Value("${spring.elasticSearch.port}")
+    private int esPort;
+    @Value("${spring.elasticSearch.scheme:http}")
+    private String scheme;
+    @Value("${spring.elasticSearch.user.name:null}")
+    private String esUserName;
+    @Value("${spring.elasticSearch.user.password:null}")
+    private String esUserPassword;
+    @Value("${spring.elasticSearch.auth-enable:false}")
+    private Boolean authEnable;
+    /**
+     * ES空闲连接保持时间，单位s，默认3s
+     */
+    @Value("${spring.elasticSearch.keepAliveTime:3}")
+    private int keepAliveTime;
+
+    private static HttpHost[] makeHttpHost(String[] host, int port, String scheme) {
+        HttpHost[] hosts = new HttpHost[host.length];
+
+        for (int i = 0; i < hosts.length; ++i) {
+            hosts[i] = new HttpHost(host[i], port, scheme);
+        }
+
+        log.info("hosts组装成功：[{}]", JSONObject.toJSONString(hosts));
+        return hosts;
+    }
 
     /**
      * 走认证模式的客户端，注入时需要使用@Qualifier("AuthRestHighLevelClient")进行指定
@@ -93,6 +102,52 @@ public class ESRestAuthConfig {
         RestHighLevelClient client = new RestHighLevelClient(builder);
 
         return client;
+    }
+
+    @Bean("noAuthRestHighLevelClient")
+    public RestHighLevelClient createNoAuthRestHighLevelClient() {
+        return getRestHighLevelClient(esHost, esPort, scheme);
+    }
+
+    private void setMutiConnectConfig(RestClientBuilder restClientBuilder) {
+        restClientBuilder.setHttpClientConfigCallback((httpClientBuilder) -> {
+            httpClientBuilder.setMaxConnTotal(100);
+            httpClientBuilder.setMaxConnPerRoute(100);
+            return httpClientBuilder;
+        });
+    }
+
+    private void setConnectTimeOutConfig(RestClientBuilder restClientBuilder) {
+        restClientBuilder.setRequestConfigCallback((requestConfigBuilder) -> {
+            requestConfigBuilder.setConnectTimeout(1000);
+            requestConfigBuilder.setSocketTimeout(30000);
+            requestConfigBuilder.setConnectionRequestTimeout(500);
+            return requestConfigBuilder;
+        });
+    }
+
+    public RestHighLevelClient getRestHighLevelClient(String[] host, int port, String scheme) {
+        HttpHost[] hosts = makeHttpHost(host, port, scheme);
+        RestClientBuilder restClientBuilder = RestClient.builder(hosts);
+        setConnectTimeOutConfig(restClientBuilder);
+        setMutiConnectConfig(restClientBuilder);
+        restClientBuilder.setFailureListener(new RestClient.FailureListener() {
+            public void onFailure(Node node) {
+                log.error("elasticSearch - failure：[{}]", node.toString());
+            }
+        }).setHttpClientConfigCallback(config -> config.setKeepAliveStrategy((response, context) -> TimeUnit.MINUTES.toMillis(keepAliveTime)));
+        ;
+        return new RestHighLevelClient(restClientBuilder);
+    }
+
+    @Bean("AutoCheckWhetherAuthRestHighLevelClient")
+    @Primary
+    public RestHighLevelClient createAutoCheckWhetherAuthRestHighLevelClient() {
+        if (authEnable) {
+            return createAuthRestHighLevelClient();
+        } else {
+            return createNoAuthRestHighLevelClient();
+        }
     }
 
     public static class NullHostNameVerifier implements HostnameVerifier {
@@ -158,63 +213,6 @@ public class ESRestAuthConfig {
             }
             httpClientBuilder.setKeepAliveStrategy((response, context) -> TimeUnit.MINUTES.toMillis(keepAliveTime));
             return httpClientBuilder;
-        }
-    }
-
-    @Bean("noAuthRestHighLevelClient")
-    public RestHighLevelClient createNoAuthRestHighLevelClient() {
-        return getRestHighLevelClient(esHost, esPort, scheme);
-    }
-
-    private static HttpHost[] makeHttpHost(String[] host, int port, String scheme) {
-        HttpHost[] hosts = new HttpHost[host.length];
-
-        for (int i = 0; i < hosts.length; ++i) {
-            hosts[i] = new HttpHost(host[i], port, scheme);
-        }
-
-        log.info("hosts组装成功：[{}]", JSONObject.toJSONString(hosts));
-        return hosts;
-    }
-
-    private void setMutiConnectConfig(RestClientBuilder restClientBuilder) {
-        restClientBuilder.setHttpClientConfigCallback((httpClientBuilder) -> {
-            httpClientBuilder.setMaxConnTotal(100);
-            httpClientBuilder.setMaxConnPerRoute(100);
-            return httpClientBuilder;
-        });
-    }
-
-    private void setConnectTimeOutConfig(RestClientBuilder restClientBuilder) {
-        restClientBuilder.setRequestConfigCallback((requestConfigBuilder) -> {
-            requestConfigBuilder.setConnectTimeout(1000);
-            requestConfigBuilder.setSocketTimeout(30000);
-            requestConfigBuilder.setConnectionRequestTimeout(500);
-            return requestConfigBuilder;
-        });
-    }
-
-    public RestHighLevelClient getRestHighLevelClient(String[] host, int port, String scheme) {
-        HttpHost[] hosts = makeHttpHost(host, port, scheme);
-        RestClientBuilder restClientBuilder = RestClient.builder(hosts);
-        setConnectTimeOutConfig(restClientBuilder);
-        setMutiConnectConfig(restClientBuilder);
-        restClientBuilder.setFailureListener(new RestClient.FailureListener() {
-            public void onFailure(Node node) {
-                log.error("elasticSearch - failure：[{}]", node.toString());
-            }
-        }).setHttpClientConfigCallback(config -> config.setKeepAliveStrategy((response, context) -> TimeUnit.MINUTES.toMillis(keepAliveTime)));
-        ;
-        return new RestHighLevelClient(restClientBuilder);
-    }
-
-    @Bean("AutoCheckWhetherAuthRestHighLevelClient")
-    @Primary
-    public RestHighLevelClient createAutoCheckWhetherAuthRestHighLevelClient() {
-        if (authEnable) {
-            return createAuthRestHighLevelClient();
-        } else {
-            return createNoAuthRestHighLevelClient();
         }
     }
 

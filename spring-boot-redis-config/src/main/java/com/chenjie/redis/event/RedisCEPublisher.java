@@ -12,7 +12,7 @@ public class RedisCEPublisher {
         this.publisher = publisher;
     }
 
-    public void publish(Object source, String message, Throwable e){
-        publisher.publishEvent(new RedisConnectionErrorEvent(source,message,e));
+    public void publish(Object source, String message, Throwable e) {
+        publisher.publishEvent(new RedisConnectionErrorEvent(source, message, e));
     }
 }

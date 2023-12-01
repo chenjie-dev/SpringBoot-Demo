@@ -25,14 +25,14 @@ spring:
       properties:
         sasl.mechanism: ${KAFKA_SASL_MECHANISM:PLAIN}
         security.protocol: ${KAFKA_SECURITY_PROTOCOL:SASL_PLAINTEXT}
-        sasl.jaas.config: ${KAFKA_SASL_CONFIG:org.apache.kafka.common.security.plain.PlainLoginModule required username=user password=O4uZJ8Vaow5v;}
-        ssl.truststore.location: ${KAFKA_SSL_TRUSTSTORE_LOCATION_CONFIG:D:\workspace\service\source\src\main\resources\kafka.truststore.jks}
-        ssl.truststore.password: ${KAFKA_SSL_TRUSTSTORE_PASSWORD_CONFIG:123456}
+        sasl.jaas.config: ${KAFKA_SASL_CONFIG:org.apache.kafka.common.security.plain.PlainLoginModule required username="user" password="O4uZJ8Vaow5v";}
+        ssl.truststore.location: ${KAFKA_SSL_TRUSTSTORE_LOCATION_CONFIG:src/main/resources/kafka.truststore.jks}
+        ssl.truststore.password: ${KAFKA_SSL_TRUSTSTORE_PASSWORD_CONFIG:111}
         ssl.endpoint.identification.algorithm:
 
     consumer:
       namespace: ${LOCAL_NAMESPACE:backend-manage}
-      group-id: ${GROUP-ID:huawei-test-not-auth-email-0}
+      group-id: ${GROUP-ID:chenjie-test-group-id}
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -43,9 +43,9 @@ spring:
       properties:
         sasl.mechanism: ${KAFKA_SASL_MECHANISM:PLAIN}
         security.protocol: ${KAFKA_SECURITY_PROTOCOL:SASL_PLAINTEXT}
-        sasl.jaas.config: ${KAFKA_SASL_CONFIG:org.apache.kafka.common.security.plain.PlainLoginModule required username=user password=O4uZJ8Vaow5v;}
-        ssl.truststore.location: ${KAFKA_SSL_TRUSTSTORE_LOCATION_CONFIG:D:\workspace\service\source\src\main\resources\kafka.truststore.jks}
-        ssl.truststore.password: ${KAFKA_SSL_TRUSTSTORE_PASSWORD_CONFIG:123456}
+        sasl.jaas.config: ${KAFKA_SASL_CONFIG:org.apache.kafka.common.security.plain.PlainLoginModule required username="user" password="O4uZJ8Vaow5v";}
+        ssl.truststore.location: ${KAFKA_SSL_TRUSTSTORE_LOCATION_CONFIG:src/main/resources/kafka.truststore.jks}
+        ssl.truststore.password: ${KAFKA_SSL_TRUSTSTORE_PASSWORD_CONFIG:111}
         session.timeout.ms: 60000
         heartbeat.interval.ms: 20000
         max.poll.interval.ms: 60000

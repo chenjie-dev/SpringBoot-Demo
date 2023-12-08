@@ -3,23 +3,19 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <artifactId>spring-boot-caffeine-test</artifactId>
+
     <parent>
         <groupId>com.chenjie</groupId>
         <artifactId>SpringBoot-Demo</artifactId>
         <version>0.0.1</version>
     </parent>
 
-    <artifactId>spring-boot-elasticsearch-test</artifactId>
-
     <dependencies>
         <dependency>
             <groupId>com.chenjie</groupId>
             <artifactId>spring-boot-base-config</artifactId>
             <version>${SpringBoot-Demo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
     </dependencies>
 </project>

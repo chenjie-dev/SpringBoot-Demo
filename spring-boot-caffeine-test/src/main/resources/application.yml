@@ -1,0 +1,12 @@
+server:
+  port: 10001
+spring:
+  application:
+    name: spring-boot-caffeine-test
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=600s
+    expireAfterAccess: 60
+    initialCapacity: 100
+    maximumSize: 500

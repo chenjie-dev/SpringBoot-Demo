@@ -22,5 +22,6 @@
             <artifactId>spring-boot-redis-config</artifactId>
             <version>${SpringBoot-Demo.version}</version>
         </dependency>
+
     </dependencies>
 </project>

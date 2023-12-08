@@ -30,4 +30,5 @@ public class RedisTest {
         System.out.println(starterRedisTemplate.opsForValue().get(testKey).toString());
 
     }
+
 }

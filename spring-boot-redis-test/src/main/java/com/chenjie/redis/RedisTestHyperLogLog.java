@@ -39,28 +39,40 @@ public class RedisTestHyperLogLog {
     public void testHyperLogLog() {
         HyperLogLogOperations operations = starterRedisTemplate.opsForHyperLogLog();
 
-        // 使用 add 方法添加元素，对应 PFADD 命令
-        operations.add("20231010", "1398374320777994240", "1398374320777994241", "1398374320777994242");
+        String key1 = "HyperLogLog-key-1";
+        String key2 = "HyperLogLog-key-2";
 
+        long currentTime = System.currentTimeMillis() / 1000;
+
+        String userId1 = String.valueOf(currentTime + 1);
+        String userId2 = String.valueOf(currentTime + 2);
+        String userId3 = String.valueOf(currentTime + 3);
+        String userId4 = String.valueOf(currentTime + 4);
+        String userId5 = String.valueOf(currentTime + 5);
+
+        // 使用 add 方法添加元素，对应 PFADD 命令
+        operations.add(key1, userId1, userId2, userId3);
         // 使用 size 方法获取元素数量，对应 PFCOUNT 命令
-        System.out.println(operations.size("20231010"));     // 3
+        System.out.println(operations.size(key1));     // 3
 
         // 继续添加元素
-        operations.add("20231010", "1398374320777994240", "1398374320777994244");
-
+        operations.add(key1, userId1, userId4);
         // 再次获取元素数量
-        System.out.println(operations.size("20231010"));     // 4
+        System.out.println(operations.size(key1));     // 4
 
         // 添加新的 HyperLogLog
-        operations.add("20231011", "1398374320777994246", "1398374320777994247");
-
+        operations.add(key2, userId4, userId5);
         // 获取新的 HyperLogLog 的元素数量
-        System.out.println(operations.size("20231011"));     // 2
+        System.out.println(operations.size(key2));     // 2
 
         // 使用 union 方法合并两个 HyperLogLog，对应 PFMERGE 命令
         // 集群下使用有问题
-        operations.union("202310", "20231010", "20231011");
-        // 获取合并后的 HyperLogLog 的元素数量
-        System.out.println(operations.size("202310"));       // 5
+//        operations.union("202310", key1, key2);
+//        // 获取合并后的 HyperLogLog 的元素数量
+//        System.out.println(operations.size("202310"));  // 5
+
+        operations.delete(key1);
+        operations.delete(key2);
+
     }
 }

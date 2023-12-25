@@ -1,15 +1,16 @@
 package com.chenjie.kafka;
 
-import com.chenjie.kafka.service.KafkaService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 
 @RunWith(SpringRunner.class)
@@ -18,20 +19,28 @@ import java.util.concurrent.Future;
 public class KafkaTestProducer {
 
     @Autowired
-    private KafkaService kafkaService;
+    private KafkaTemplate kafkaTemplate;
+
 
     private static final String testTopic = "chenjie-test-topic";
 
     @Test
-    public void test() throws InterruptedException, ExecutionException {
+    public void test() {
         int i = 0;
         while (true) {
-            Future result = kafkaService.send(testTopic, "test"+System.currentTimeMillis());
-            log.info("result.get() ----> " + result.get());
-            log.info("result.isDone() ----> " + result.isDone());
-            log.info("睡眠一秒");
-            log.info("一共发送{}条消息", ++i);
-            Thread.sleep(1000);
+            kafkaTemplate.send(testTopic, "test" + System.currentTimeMillis())
+                    .addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
+                                     @Override
+                                     public void onSuccess(SendResult<String, String> stringStringSendResult) {
+                                         log.info(">>>>> 发送成功 <<<<<");
+                                     }
+
+                                     @Override
+                                     public void onFailure(Throwable throwable) {
+                                         log.info(">>>>> 发送失败 <<<<<");
+                                     }
+                                 }
+                    );
         }
     }
 }

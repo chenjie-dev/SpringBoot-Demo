@@ -59,12 +59,12 @@ public class KafkaServiceAutoConfigure {
      *
      * @return
      */
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnBean(KafkaService.class)
-    public MyKafkaListenerAnnotationBeanPostProcessor myAnnotationProcessor() {
-        return new MyKafkaListenerAnnotationBeanPostProcessor(env, kubernetesClient);
-    }
+//    @Bean
+//    @ConditionalOnMissingBean
+//    @ConditionalOnBean(KafkaService.class)
+//    public MyKafkaListenerAnnotationBeanPostProcessor myAnnotationProcessor() {
+//        return new MyKafkaListenerAnnotationBeanPostProcessor(env, kubernetesClient);
+//    }
 
     /**
      * kafka消息发送实例

@@ -36,7 +36,6 @@ public class RedisTestBitMap {
         Boolean status = redisTemplate.opsForValue().getBit(ONLINE_USERS_KEY, userId1);
         System.out.println("userId1状态：" + status);
 
-
         List<Long> onlineUserCount = redisTemplate.opsForValue().bitField(ONLINE_USERS_KEY,BitFieldSubCommands.create());
         System.out.println("当前在线用户数：" + onlineUserCount); // 应该输出：3
 

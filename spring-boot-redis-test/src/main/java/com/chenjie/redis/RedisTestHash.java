@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Set;
 public class RedisTestHash {
 
     @Autowired
-    private StarterRedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Test
     public void testHash() {
@@ -33,7 +34,7 @@ public class RedisTestHash {
         redisTemplate.opsForHash().put(key, key_field2, key_value2);
 
         // 获取 hash 类型的 key 中的数据
-        Map<String, Object> map = redisTemplate.opsForHash().entries(key);
+        Map<Object, Object> map = redisTemplate.opsForHash().entries(key);
         System.out.println("获取 hash 类型的 key 中的数据: " + map);
 
         // 删除 hash 类型的 key 中的数据
@@ -50,7 +51,7 @@ public class RedisTestHash {
         System.out.println("获取 hash 类型的 key 中所有 field 的值: " + values);
 
         // 获取 hash 类型的 key 中所有 field 和 value 的元组
-        Set<Map.Entry<String, Object>> entries = redisTemplate.opsForHash().entries(key).keySet();
+        Set<Object> entries = redisTemplate.opsForHash().entries(key).keySet();
         System.out.println("获取 hash 类型的 key 中所有 field 和 value 的元组：" + entries);
 
         // 删除 hash 类型的 key 中的数据

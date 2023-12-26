@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.HyperLogLogOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
@@ -13,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class RedisTestHyperLogLog {
 
     @Autowired
-    private StarterRedisTemplate starterRedisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 使用 Redis HyperLogLog
@@ -37,7 +38,7 @@ public class RedisTestHyperLogLog {
 
     @Test
     public void testHyperLogLog() {
-        HyperLogLogOperations operations = starterRedisTemplate.opsForHyperLogLog();
+        HyperLogLogOperations operations = redisTemplate.opsForHyperLogLog();
 
         String key1 = "HyperLogLog-key-1";
         String key2 = "HyperLogLog-key-2";

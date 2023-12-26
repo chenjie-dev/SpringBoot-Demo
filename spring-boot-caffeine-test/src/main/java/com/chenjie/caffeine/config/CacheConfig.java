@@ -31,7 +31,8 @@ public class CacheConfig {
                 // 初始的缓存空间大小
                 .initialCapacity(initialCapacity)
                 // 缓存的最大条数
-                .maximumSize(maximumSize).build();
+                .maximumSize(maximumSize)
+                .build();
     }
 
     @Bean

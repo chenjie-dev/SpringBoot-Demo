@@ -9,17 +9,12 @@
         <version>0.0.1</version>
     </parent>
 
-    <artifactId>spring-boot-elasticsearch-test</artifactId>
+    <artifactId>spring-boot-webflux-test</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.chenjie</groupId>
             <artifactId>spring-boot-base-config</artifactId>
-            <version>${SpringBoot-Demo.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.chenjie</groupId>
-            <artifactId>spring-boot-elasticsearch-config</artifactId>
             <version>${SpringBoot-Demo.version}</version>
         </dependency>
     </dependencies>

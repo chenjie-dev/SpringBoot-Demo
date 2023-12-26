@@ -12,11 +12,5 @@ spring:
     user:
       name: ${ES_USER:elastic}
       password: ${ES_PASSWORD:unpaouqKm0BQ}
-    rest:
-      uris: 10.31.63.96:9200
-      username: elastic
-      password: unpaouqKm0BQ
-      read-timeout: 30s
-      connection-timeout: 5s
 
 

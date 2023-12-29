@@ -17,5 +17,10 @@
             <artifactId>spring-boot-base-config</artifactId>
             <version>${SpringBoot-Demo.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.chenjie</groupId>
+            <artifactId>spring-cloud-base-config</artifactId>
+            <version>${SpringBoot-Demo.version}</version>
+        </dependency>
     </dependencies>
 </project>

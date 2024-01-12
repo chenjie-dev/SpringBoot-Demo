@@ -7,15 +7,17 @@ import org.springframework.stereotype.Service;
 public class HystrixService {
 
     @HystrixCommand(fallbackMethod = "fallback")
-    public String doSomething(boolean success) {
-        if (success) {
-            return "Success";
-        } else {
+    public String doSomething(Integer num) {
+        if (num == 1) {
+            return "1";
+        } else if (num == 2) {
+            return "2";
+        }else {
             throw new RuntimeException("Error occurred");
         }
     }
 
-    public String fallback(boolean success) {
-        return "Fallback";
+    public String fallback(Integer num) {
+        return "降级返回";
     }
 }

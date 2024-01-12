@@ -11,6 +11,8 @@ spring:
   kafka:
     enabled: true
     bootstrap-servers: ${KAFKA_SERVERS:10.31.63.80:9094,10.31.63.81:9094,10.31.63.82:9094}
+    admin:
+      client-id: admin-client
     listener:
       #      配置ack模式为用户自己负责，为手动提交做好准备
       ack-mode: manual

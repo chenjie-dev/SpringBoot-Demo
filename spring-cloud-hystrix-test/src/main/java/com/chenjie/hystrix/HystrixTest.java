@@ -21,16 +21,19 @@ public class HystrixTest {
     public void testCircuitBreaker() {
 
         // 模拟正常情况下的调用
-        String result = hystrixService.doSomething(true);
-        assertEquals("Success", result);
-
-        // 模拟熔断条件
-        result = hystrixService.doSomething(false);
-
-        System.out.println("Circuit breaker");
+        String result = hystrixService.doSomething(1);
+        assertEquals("1", result);
         System.out.println(result);
 
-        assertEquals("Fallback", result);
+        result = hystrixService.doSomething(2);
+        assertEquals("2", result);
+        System.out.println(result);
+
+        // 模拟熔断条件
+        result = hystrixService.doSomething(999);
+        System.out.println(result);
+
+        assertEquals("降级返回", result);
     }
 
 }

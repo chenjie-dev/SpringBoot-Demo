@@ -10,8 +10,6 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import java.util.concurrent.ExecutionException;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -24,9 +22,9 @@ public class KafkaTestProducer {
 
     private static final String testTopic = "chenjie-test-topic";
 
+
     @Test
     public void test() {
-        int i = 0;
         while (true) {
             kafkaTemplate.send(testTopic, "test" + System.currentTimeMillis())
                     .addCallback(new ListenableFutureCallback<SendResult<String, String>>() {

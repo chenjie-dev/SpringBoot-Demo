@@ -19,9 +19,7 @@ public class KafkaTestProducer {
     @Autowired
     private KafkaTemplate kafkaTemplate;
 
-
     private static final String testTopic = "chenjie-test-topic";
-
 
     @Test
     public void test() {

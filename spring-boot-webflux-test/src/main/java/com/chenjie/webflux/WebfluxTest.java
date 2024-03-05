@@ -44,7 +44,6 @@ public class WebfluxTest {
             });
         }
 
-
         log.info(">>>>> 主线程结束 <<<<<");
 
         Thread.sleep(100 * 1000L);
